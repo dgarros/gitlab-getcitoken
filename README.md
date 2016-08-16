@@ -1,24 +1,27 @@
-getcitoken
+gitlab-getcitoken
 ==========
 
 Retrieves Gitlab-CI Token for Automated Runner Authentication
 
+> This project is an adaptation of https://github.com/sammcj/getcitoken
+> Script is bundled in docker and has been updated to work with version 8.10.5 of Gitlab
+
 ```
-user ~/getcitoken % ruby getcitoken.rb
-ba46f9b37eadd14a77ad
+docker run --rm -t \
+  --env GITLAB_URL="http://gitlab/" \
+  --env GITLAB_USERNAME="root" \
+  --env GITLAB_PASSWORD="admin" \
+  --link "gitlab:gitlab" \
+  -i dgarros/gitlab-getcitoken
 ```
 
-Output is logged to getcitoken.log
+Output is logged to getcitoken.log inside the container (TODO update readme to explain how to retrieve)
 
 ## Requirements
-
-- mechanize & logger gems
-- ruby 1.9 or newer
+- docker
 
 ## Usage
 
-1) Copy config.yml.example to config.yml edit un/pw and gitlab-ci URL
-
-2) Run ```ruby getcitoken.rb```
-
+1) update Makefile with your Environment variables
+2) Run ```make run```
 3) Receive token and be forever happy!

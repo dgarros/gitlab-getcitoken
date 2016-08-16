@@ -1,26 +1,26 @@
 #!/usr/bin/env ruby
 
 # getcitoken - retrieves gitlab-ci token for configuration of runners
-# Sam McLeod - https://github.com/sammcj/getcitoken
+# Damien Garros, inspired from Sam McLeod - https://github.com/sammcj/getcitoken
 
 require 'mechanize'
 require 'logger'
-require 'yaml'
 
-config = YAML.load_file('config.yml')
-gitlab_ci_url = config['gitlab_ci_url']
+gitlab_ci_url = ENV['GITLAB_URL']
+gitlab_usermame = ENV['GITLAB_USERNAME']
+gitlab_password = ENV['GITLAB_PASSWORD']
 
 agent = Mechanize.new
 agent.log = Logger.new "getcitoken.log"
 
-login_page = agent.get gitlab_ci_url+"/user_sessions/new"
+login_page = agent.get gitlab_ci_url+"/users/sign_in"
 login_form = login_page.form
 
-email_field = login_form.field_with(name: "user_session[email]")
-password_field = login_form.field_with(name: "user_session[password]")
+email_field = login_form.field_with(name: "user[login]")
+password_field = login_form.field_with(name: "user[password]")
 
-email_field.value = config['gitlab_username']
-password_field.value = config['gitlab_password']
+email_field.value = gitlab_usermame
+password_field.value = gitlab_password
 
 home_page = login_form.submit
 runner_page = agent.get agent.get gitlab_ci_url+"/admin/runners"
